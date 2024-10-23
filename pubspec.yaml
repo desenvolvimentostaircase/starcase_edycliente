@@ -1,0 +1,64 @@
+name: edywasacliente
+description: A new Flutter project.
+
+publish_to: "none"
+
+#03/09/2023
+version: 3.1.0+23
+
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.5
+  firebase_core: ^2.7.0
+  firebase_core_platform_interface: ^4.5.3
+  firebase_auth: ^4.1.2
+  firebase_auth_platform_interface: ^6.11.11
+  google_fonts: ^5.1.0
+  font_awesome_flutter: ^10.2.1
+  cloud_firestore: ^4.9.3
+  url_launcher: ^6.1.6
+  url_launcher_android: ^6.0.24
+  email_validator: ^2.1.17
+  flutter_launcher_icons: ^0.13.1
+  icons_launcher: ^2.1.3
+  fluttertoast: ^8.2.4
+  easy_search_bar: ^2.5.0
+  dropdown_search: ^5.0.6
+  flutter_typeahead: ^4.8.0
+  firebase_analytics: ^10.5.1
+  intl: ^0.19.0
+  google_mobile_ads: ^5.1.0
+  firebase_messaging: ^14.6.9
+  flutter_local_notifications: ^17.2.3
+
+icons_launcher:
+  image_path: "assets/logoCliente.png"
+  platforms:
+    android:
+      enable: true
+      background_color: "#FFFFF" # Azul
+      adaptive_icon_background: "#FFFFFF" # Azul para ícones adaptativos
+      adaptive_icon_foreground: "assets/logoCliente.png"
+    ios:
+      enable: true
+      background_color: "#FFFFFF" # Azul
+    
+
+# dart run icons_launcher:create
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logoCliente.png
