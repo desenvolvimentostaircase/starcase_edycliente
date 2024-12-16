@@ -17,29 +17,17 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -52,11 +40,49 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCOLLla7sKkBdHYM2CCSPgvNpUeG18OSXY',
+    appId: '1:730217989738:web:f5a363346651ea3c07ec13',
+    messagingSenderId: '730217989738',
+    projectId: 'edywasa-b8473',
+    authDomain: 'edywasa-b8473.firebaseapp.com',
+    storageBucket: 'edywasa-b8473.appspot.com',
+    measurementId: 'G-HZVLHR934H',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBXzJb_t6lce8XGiAbm8i5hwULrM-XE22w',
     appId: '1:921834200020:android:c7d148970417178a2e1441',
     messagingSenderId: '921834200020',
     projectId: 'teste-staircase',
     storageBucket: 'teste-staircase.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCqiyR-Kf4535qsglvMKh969wApYjs__8I',
+    appId: '1:730217989738:ios:1430f92e4e26f41b07ec13',
+    messagingSenderId: '730217989738',
+    projectId: 'edywasa-b8473',
+    storageBucket: 'edywasa-b8473.appspot.com',
+    iosBundleId: 'com.edy.edycliente',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCqiyR-Kf4535qsglvMKh969wApYjs__8I',
+    appId: '1:730217989738:ios:1430f92e4e26f41b07ec13',
+    messagingSenderId: '730217989738',
+    projectId: 'edywasa-b8473',
+    storageBucket: 'edywasa-b8473.appspot.com',
+    iosBundleId: 'com.edy.edycliente',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCOLLla7sKkBdHYM2CCSPgvNpUeG18OSXY',
+    appId: '1:730217989738:web:ee2c86656f69b29107ec13',
+    messagingSenderId: '730217989738',
+    projectId: 'edywasa-b8473',
+    authDomain: 'edywasa-b8473.firebaseapp.com',
+    storageBucket: 'edywasa-b8473.appspot.com',
+    measurementId: 'G-VJJ6PWKBMS',
   );
 }

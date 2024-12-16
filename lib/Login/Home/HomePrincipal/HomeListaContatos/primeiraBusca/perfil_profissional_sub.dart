@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:edywasacliente/Cores/cores.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../../../../Cores/cores.dart';
 import 'salvarContato/salvar_contato.dart';
 
 class PerfilProfissional extends StatefulWidget {
@@ -18,6 +19,8 @@ class PerfilProfissional extends StatefulWidget {
 }
 
 class _PerfilProfissionalState extends State<PerfilProfissional> {
+  bool showLocationButton = true;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final formKey = GlobalKey<FormState>();
@@ -81,12 +84,13 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                 String profissional = '';
 
                 final salvarContato = SalvarContato(
-                    nome: dados.nome,
-                    whatsAppContato: dados.whatsAppContato,
-                    cidadeEstadoSelecionada: cidadeEstado,
-                    profissionalSelecionada: profissional,
-                    email: widget.auxEmail,
-                    imagemPrincipalUrl: dados.imagemPrincipalUrl);
+                  nome: dados.nome,
+                  whatsAppContato: dados.whatsAppContato,
+                  cidadeEstadoSelecionada: cidadeEstado,
+                  profissionalSelecionada: profissional,
+                  email: widget.auxEmail,
+                  imagemPrincipalUrl: dados.imagemPrincipalUrl,
+                );
                 createSalvarContato(salvarContato);
                 Navigator.pop(context);
                 final snackBar = SnackBar(
@@ -557,11 +561,17 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                                 ),
                               ),
                               onTap: () async {
+                                String mensagem = Uri.encodeComponent(
+                                    "Olá ${dados.nome}, venho da Staircase, gostaria de saber se você está disponível para serviço?");
                                 Uri whatsappUrl = Uri.parse(
-                                    "whatsapp://send?phone=+55${dados.whatsAppContato}&text=Olá ${dados.nome}, venho da Staircase gostaria de saber se você está disponível para serviço?");
+                                    "https://api.whatsapp.com/send?phone=55${dados.whatsAppContato}&text=$mensagem");
 
                                 if (await canLaunchUrl(whatsappUrl)) {
-                                  await launchUrl(whatsappUrl);
+                                  await launchUrl(
+                                    whatsappUrl,
+                                    mode: LaunchMode
+                                        .externalApplication, // Garante abertura no navegador
+                                  );
                                 } else {
                                   throw 'Could not launch $whatsappUrl';
                                 }
@@ -605,11 +615,17 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                                 ),
                               ),
                               onTap: () async {
+                                String mensagem = Uri.encodeComponent(
+                                    "Olá ${dados.nome}, venho da Staircase, gostaria de saber se você está disponível para serviço?");
                                 Uri whatsappUrl = Uri.parse(
-                                    "whatsapp://send?phone=+55${dados.whatsAppContato02}&text=Olá ${dados.nome}, venho do Staircase gostaria de saber se você está disponível para serviço?");
+                                    "https://api.whatsapp.com/send?phone=55${dados.whatsAppContato}&text=$mensagem");
 
                                 if (await canLaunchUrl(whatsappUrl)) {
-                                  await launchUrl(whatsappUrl);
+                                  await launchUrl(
+                                    whatsappUrl,
+                                    mode: LaunchMode
+                                        .externalApplication, // Garante abertura no navegador
+                                  );
                                 } else {
                                   throw 'Could not launch $whatsappUrl';
                                 }
@@ -653,11 +669,17 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                                 ),
                               ),
                               onTap: () async {
+                                String mensagem = Uri.encodeComponent(
+                                    "Olá ${dados.nome}, venho da Staircase, gostaria de saber se você está disponível para serviço?");
                                 Uri whatsappUrl = Uri.parse(
-                                    "whatsapp://send?phone=+55${dados.whatsAppContato03}&text=Olá ${dados.nome}, venho do Staircase gostaria de saber se você está disponível para serviço?");
+                                    "https://api.whatsapp.com/send?phone=55${dados.whatsAppContato}&text=$mensagem");
 
                                 if (await canLaunchUrl(whatsappUrl)) {
-                                  await launchUrl(whatsappUrl);
+                                  await launchUrl(
+                                    whatsappUrl,
+                                    mode: LaunchMode
+                                        .externalApplication, // Garante abertura no navegador
+                                  );
                                 } else {
                                   throw 'Could not launch $whatsappUrl';
                                 }
@@ -671,46 +693,48 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                   ),
 
                 //Instagram
-                GestureDetector(
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: azul,
-                          ),
-                          height: 70,
-                          width: 70,
-                          child: Icon(
-                            FontAwesomeIcons.instagram,
-                            color: cinzaClaro,
-                            size: 32,
+                dados.instagram != ''
+                    ? GestureDetector(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: azul,
+                                ),
+                                height: 70,
+                                width: 70,
+                                child: Icon(
+                                  FontAwesomeIcons.instagram,
+                                  color: cinzaClaro,
+                                  size: 32,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "Instagram",
+                                style: GoogleFonts.roboto(
+                                  color: azul,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Instagram",
-                          style: GoogleFonts.roboto(
-                            color: azul,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: () async {
-                    Uri webUrl = Uri.parse("${dados.instagram}");
-                    if (await canLaunchUrl(webUrl)) {
-                      await launchUrl(webUrl);
-                    } else {
-                      print("can't open Instagram");
-                    }
-                  },
-                ),
+                        onTap: () async {
+                          Uri webUrl = Uri.parse("${dados.instagram}");
+                          if (await canLaunchUrl(webUrl)) {
+                            await launchUrl(webUrl);
+                          } else {
+                            print("can't open Instagram");
+                          }
+                        },
+                      )
+                    : SizedBox(),
                 //Facebook
                 SizedBox(
                   width: 15,
@@ -1007,52 +1031,105 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          "${dados.nome}",
-                          style: GoogleFonts.roboto(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: cinzaEscuro,
-                          ),
-                        ),
-                      ),
-                      FilledButton.icon(
-                        label: Text(
-                          "Localização",
-                          style: GoogleFonts.roboto(
-                            color: cinzaClaro,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        icon: Icon(Icons.location_on),
-                        onPressed: () async {
-                          Uri googleMapsUrl = Uri.parse(
-                              "https://www.google.com/maps/search/?api=1&query=${dados.localizacaoDoEstabelecimentoLat},${dados.localizacaoDoEstabelecimentoLong}");
+                          scrollDirection: Axis.horizontal,
+                          child: showLocationButton
+                              ? Text("${dados.nome}",
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: cinzaEscuro,
+                                  ))
+                              : FilledButton.icon(
+                                  label: Text(
+                                    "Abrir Maps",
+                                    style: GoogleFonts.roboto(
+                                      color: cinzaClaro,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  icon: Icon(Icons.location_on),
+                                  onPressed: () async {
+                                    Uri googleMapsUrl = Uri.parse(
+                                        "https://www.google.com/maps/search/?api=1&query=${dados.localizacaoDoEstabelecimentoLat},${dados.localizacaoDoEstabelecimentoLong}");
 
-                          if (await canLaunchUrl(googleMapsUrl)) {
-                            await launchUrl(googleMapsUrl);
-                          } else {
-                            throw 'Could not open the map.';
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.only(
-                              left: 20, top: 10, right: 20, bottom: 10),
-                          backgroundColor: azul,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
-                      ),
+                                    if (await canLaunchUrl(googleMapsUrl)) {
+                                      await launchUrl(googleMapsUrl);
+                                    } else {
+                                      throw 'Could not open the map.';
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.only(
+                                        left: 20,
+                                        top: 10,
+                                        right: 20,
+                                        bottom: 10),
+                                    backgroundColor: azul,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                )),
+                      showLocationButton
+                          ? FilledButton.icon(
+                              label: Text(
+                                "Localização",
+                                style: GoogleFonts.roboto(
+                                  color: cinzaClaro,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              icon: Icon(Icons.location_on),
+                              onPressed: () {
+                                // Altera o estado para mostrar o botão "X"
+                                setState(() {
+                                  showLocationButton = false;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.only(
+                                    left: 20, top: 10, right: 20, bottom: 10),
+                                backgroundColor: azul,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            )
+                          : IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: cinzaClaro,
+                              ),
+                              onPressed: () {
+                                // Altera o estado para voltar a mostrar o botão "Localização"
+                                setState(() {
+                                  showLocationButton = true;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.only(
+                                    left: 20, top: 10, right: 20, bottom: 10),
+                                backgroundColor: vermelho,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                   Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "${dados.detalhes}",
-                    ),
-                  ),
+                      alignment: Alignment.topLeft,
+                      child: showLocationButton
+                          ? Text(
+                              "${dados.detalhes}",
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Text(
+                                "${dados.rua}",
+                                style: GoogleFonts.roboto(fontSize: 18),
+                              ),
+                            )),
                   SizedBox(
                     height: 10,
                   ),
@@ -1061,23 +1138,34 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: [
-                        dados.emiteNotaFiscal != ''
-                            ? Container(
+                        showLocationButton
+                            ? dados.emiteNotaFiscal != 'Não'
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: cinzaClaro,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("Emite nota fiscal"),
+                                    ),
+                                  )
+                                : SizedBox()
+                            //
+                            : Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: cinzaClaro,
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text("Emite nota fiscal"),
+                                  child: Text(dados.numero),
                                 ),
-                              )
-                            : SizedBox()
-                        //
-                        ,
+                              ),
                         SizedBox(
                           width: 10,
                         ),
+
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
@@ -1085,7 +1173,9 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(dados.cnpj),
+                            child: showLocationButton
+                                ? Text(dados.cnpj)
+                                : Text(dados.bairro),
                           ),
                         ),
 
@@ -1101,7 +1191,7 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
         ],
       );
 
-  Future popupEnviarSolicitacaoDireta(context,PerfilDados dados) => showDialog(
+  Future popupEnviarSolicitacaoDireta(context, PerfilDados dados) => showDialog(
         context: context,
         builder: (context) => AlertDialog(
           backgroundColor: cinzaClaro,
@@ -1127,8 +1217,6 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                   SizedBox(
                     height: 30,
                   ),
-                  //O que faz?
-
                   TextFormField(
                     maxLines: 4,
                     style: GoogleFonts.roboto(
@@ -1237,11 +1325,13 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
               onPressed: () async {
                 //Enviar para a solicitação para o profissional
                 //data atual
+
                 final DateTime now = DateTime.now();
                 final DateFormat formatter = DateFormat('dd/MM/yyyy');
                 final String dataFormatada = formatter.format(now);
-
                 final isValidForm = formKey.currentState!.validate();
+
+                String uid = FirebaseAuth.instance.currentUser!.uid;
 
                 if (isValidForm) {
                   final docRef = _firestore
@@ -1256,7 +1346,7 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
 
                   DocumentSnapshot doc = await FirebaseFirestore.instance
                       .collection('Cliente')
-                      .doc(UID)
+                      .doc(uid)
                       .collection('Perfil')
                       .doc('Dados')
                       .get();
@@ -1285,7 +1375,7 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                   await docRefer.set({
                     'Id': aux_Id,
                     'Solicitação': solicitacaoEditingController.text,
-                    'WhatsAppContato': dados.whatsAppContato ,
+                    'WhatsAppContato': dados.whatsAppContato,
                     'Data': dataFormatada,
                   }, SetOptions(merge: true));
 
@@ -1293,7 +1383,7 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
 
                   final docRefe = _firestore
                       .collection('Cliente')
-                      .doc(UID)
+                      .doc(uid)
                       .collection('Solicitação')
                       .doc();
 
@@ -1302,9 +1392,8 @@ class _PerfilProfissionalState extends State<PerfilProfissional> {
                   await docRefe.set({
                     'Id': auxId,
                     'Solicitação': solicitacaoEditingController.text,
-                    'WhatsAppContato': dados.whatsAppContato ,
+                    'WhatsAppContato': dados.whatsAppContato,
                     'Data': dataFormatada,
-           
                   }, SetOptions(merge: true));
 
                   //Passar a pagina

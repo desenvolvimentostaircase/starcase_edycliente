@@ -7,7 +7,7 @@ FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 void logLoginEvent() {
   analytics.logEvent(
     name: 'login',
-    parameters: <String, dynamic>{
+    parameters: <String, Object>{
       'login_success': true,
     },
   );

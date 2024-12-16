@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:edywasacliente/Login/Home/HomePrincipal/home_principal.dart';
-import 'package:edywasacliente/Login/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'Login/Home/HomePrincipal/home_principal.dart';
+import 'Login/login_page.dart';
 import 'firebase_analytics_registro_login.dart';
 
 class ChecagemPage extends StatefulWidget {

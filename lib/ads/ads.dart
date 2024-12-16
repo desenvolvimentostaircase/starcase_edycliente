@@ -12,7 +12,8 @@ Widget getAd() {
     //Teste: 'ca-app-pub-3940256099942544/6300978111'
     //Anuncio oficial: 'ca-app-pub-9689165530463077/4808005280'
 
-    adUnitId: 'ca-app-pub-3940256099942544/6300978111',
+    adUnitId: 'ca-app-pub-9689165530463077/4808005280'
+    ,
     listener: bannerAdListener,
     request: const AdRequest(),
   );

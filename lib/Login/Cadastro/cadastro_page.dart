@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:edywasacliente/Login/Cadastro/NomeNumero/nomeNumero.dart';
+import 'package:edywasacliente/Personalizados/BotaoStyle.dart';
+import '../../Personalizados/CampoPersonalizado.dart';
+import 'NomeNumero/nomeNumero.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -15,7 +17,6 @@ class CadastroPage extends StatefulWidget {
 }
 
 class _CadastroPageState extends State<CadastroPage> {
-  
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //
   bool _obscureText = true;
@@ -32,139 +33,103 @@ class _CadastroPageState extends State<CadastroPage> {
       body: ListView(
         padding: const EdgeInsets.all(25),
         children: [
-          SizedBox(
-            height: 20,
+          const SizedBox(
+            height: 60,
           ),
-          Text(
-            "Cadastro",
-            style: GoogleFonts.roboto(
-              color: azul,
-              fontWeight: FontWeight.bold,
-              fontSize: 40,
+          Center(
+            child: Text(
+              "Cadastro",
+              style: GoogleFonts.roboto(
+                color: azul,
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
+              ),
             ),
           ),
-          Text(
-            "Crie sua conta para acessar o app",
-            style: GoogleFonts.roboto(
-              color: cinzaEscuro,
-              fontSize: 15,
+          Center(
+            child: Text(
+              "Crie sua conta para acessar o app",
+              style: GoogleFonts.roboto(
+                color: cinzaEscuro,
+                fontSize: 15,
+              ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           //E-mail
-          Container(
-            decoration: BoxDecoration(
-              color: cinza,
-              borderRadius: BorderRadius.circular(50),
+          CampoPersonalizado(
+            controller: _emailController, // Controller do campo de e-mail
+            hintText: "E-mail", // Texto que aparece quando o campo está vazio
+            fillColor: cinza, // Cor de fundo do campo
+            borderColor: cinza, // Cor da borda quando não está em foco
+            focusedBorderColor:
+                azul, // Cor da borda quando o campo está em foco
+            hintStyle: GoogleFonts.roboto(
+              // Estilo do texto de dica
+              color: cinzaEscuro.withOpacity(0.5),
             ),
-            height: 55,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: TextFormField(
-                cursorColor: azul,
-                controller: _emailController,
-                style: GoogleFonts.roboto(
-                  color: cinzaEscuro,
-                  fontSize: 17,
-                ),
-                decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: cinza,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: cinza,
-                        width: 2,
-                      ),
-                    ),
-                    hintText: "E-mail",
-                    hintStyle: GoogleFonts.roboto(
-                      color: cinzaEscuro.withOpacity(0.5),
-                    )),
-              ),
-            ),
+            textStyle: GoogleFonts.roboto(
+              // Estilo do texto dentro do campo
+              color: cinzaEscuro,
+              fontSize: 17,
+            ), validator: (value) {
+              return null;
+              },
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           //Senha
-          Container(
-            height: 55,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              color: cinza,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 15),
-              child: TextFormField(
-                controller: _passwordController,
-                cursorColor: azul,
-                style: GoogleFonts.roboto(
-                  color: cinzaEscuro,
-                  fontSize: 17,
-                ),
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: cinza,
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: cinza,
-                      width: 2,
-                    ),
-                  ),
-                  hintText: "Senha",
-                  hintStyle: GoogleFonts.roboto(
-                    color: cinzaEscuro.withOpacity(0.5),
-                  ),
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                    child: Icon(
-                      size: 35,
-                      color: azul,
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
-                    ),
-                  ),
-                ),
-                obscureText: _obscureText,
-              ),
-            ),
-          ),
-          //
-          SizedBox(
-            height: 80,
-          ),
-          //
-          ElevatedButton(
-            onPressed: () {
-              cadastrar();
+          CampoPersonalizado(
+            controller: _passwordController, // Controller do campo de senha
+            hintText: "Senha", // Texto que aparece quando o campo está vazio
+            obscureText: _obscureText, // Mostra ou oculta a senha
+            onSuffixIconTap: () {
+              setState(() {
+                _obscureText = !_obscureText; // Alterna a visibilidade da senha
+              });
             },
-            child: Text(
-              "Continuar",
-              style: GoogleFonts.roboto(
-                color: cinzaClaro,
-                fontSize: 20,
-              ),
+            suffixIcon: _obscureText
+                ? Icons.visibility
+                : Icons.visibility_off, // Ícone de visibilidade da senha
+            fillColor: cinza, // Cor de fundo do campo
+            borderColor: cinza, // Cor da borda quando não está em foco
+            focusedBorderColor:
+                azul, // Cor da borda quando o campo está em foco
+            hintStyle: GoogleFonts.roboto(
+              color: cinzaEscuro.withOpacity(0.5),
             ),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(12),
-              backgroundColor: azul,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
+            textStyle: GoogleFonts.roboto(
+              // Estilo do texto dentro do campo
+              color: cinzaEscuro,
+              fontSize: 17,
+            ), validator: (value) {
+              return null;
+              },
+          ),
+
+          //
+          const SizedBox(
+            height: 30,
+          ),
+
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                cadastrar();
+              },
+              style: buttonStyle(),
+              child: Text(
+                "Continuar",
+                style: GoogleFonts.roboto(
+                  color: cinzaClaro,
+                ),
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           TextButton(
@@ -172,7 +137,7 @@ class _CadastroPageState extends State<CadastroPage> {
               "Voltar",
               style: GoogleFonts.roboto(
                 color: azul,
-                fontSize: 20,
+                fontSize: 16,
               ),
             ),
             onPressed: () {
@@ -190,30 +155,28 @@ class _CadastroPageState extends State<CadastroPage> {
       UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
               email: _emailController.text, password: _passwordController.text);
-      if (userCredential != null) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Nome(),
-            ),
-            (route) => false);
-String UID = FirebaseAuth.instance.currentUser!.uid.toString();
-     
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Nome(),
+          ),
+          (route) => false);
+      String UID = FirebaseAuth.instance.currentUser!.uid.toString();
+
       await _firestore
-            .collection('Cliente')
-            .doc(UID)
-            .collection('Perfil')
-            .doc('Dados')
-            .set({
-          'Email': _emailController.text,
-        }, SetOptions(merge: true));
-      }
+          .collection('Cliente')
+          .doc(UID)
+          .collection('Perfil')
+          .doc('Dados')
+          .set({
+        'Email': _emailController.text,
+      }, SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
-            content: Text(
+            duration: const Duration(seconds: 5),
+            content: const Text(
               "Crie uma senha mais forte",
             ),
             backgroundColor: vermelho,
@@ -222,8 +185,8 @@ String UID = FirebaseAuth.instance.currentUser!.uid.toString();
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
-            content: Text(
+            duration: const Duration(seconds: 5),
+            content: const Text(
               "Este e-mail já foi cadastrado",
             ),
             backgroundColor: vermelho,

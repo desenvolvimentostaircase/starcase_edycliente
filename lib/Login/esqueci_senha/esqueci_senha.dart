@@ -1,4 +1,6 @@
 import 'package:edywasacliente/Cores/cores.dart';
+import 'package:edywasacliente/Personalizados/BotaoStyle.dart';
+import 'package:edywasacliente/Personalizados/CampoPersonalizado.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -26,87 +28,73 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
         padding: const EdgeInsets.all(25),
         child: ListView(
           children: [
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Esqueci senha",
-              style: GoogleFonts.roboto(
-                color: azul,
-                fontWeight: FontWeight.bold,
-                fontSize: 40,
-              ),
-            ),
-            Text(
-              "Digite o seu e-mail e a solicitção para redefinir a senha será enviada em seu e-mail",
-              style: GoogleFonts.roboto(
-                color: cinzaEscuro,
-                fontSize: 15,
-              ),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: cinza,
-              ),
-              height: 55,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
-                  controller: emailController,
-                  cursorColor: azul,
-                  style: GoogleFonts.roboto(
-                    color: cinzaEscuro,
-                    fontSize: 17,
-                  ),
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: cinza,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: cinza,
-                        width: 2,
-                      ),
-                    ),
-                    hintText: "E-mail",
-                    helperStyle: GoogleFonts.roboto(
-                      color: cinzaEscuro.withOpacity(0.5),
-                    ),
-                  ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                ),
-              ),
-            ),
-            //
             const SizedBox(
               height: 60,
             ),
-            //Botão "Esqueceu a senha"
-            ElevatedButton(
+            Center(
+              child: Text(
+                "Esqueci senha",
+                style: GoogleFonts.roboto(
+                  color: azul,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Center(
+              child: Text(
+                "Digite o seu e-mail e a solicitção para redefinir a senha será enviada em seu e-mail",
+                style: GoogleFonts.roboto(
+                  color: cinzaEscuro,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+
+            const SizedBox(
+              height: 50,
+            ),
+            // Campo de E-mail utilizando o widget CampoPersonalizado
+            CampoPersonalizado(
+              controller: emailController, // Controller do campo de e-mail
+              hintText: "E-mail", // Texto que aparece quando o campo está vazio
+              fillColor: cinza, // Cor de fundo do campo
+              borderColor: cinza, // Cor da borda quando não está em foco
+              focusedBorderColor:
+                  azul, // Cor da borda quando o campo está em foco
+              hintStyle: GoogleFonts.roboto(
+                // Estilo do texto de dica
+                color: cinzaEscuro.withOpacity(0.5),
+              ),
+              textStyle: GoogleFonts.roboto(
+                // Estilo do texto dentro do campo
+                color: cinzaEscuro,
+                fontSize: 17,
+              ), validator: (value) {
+                return null;
+                },
+            ),
+
+            //
+            const SizedBox(
+              height: 30,
+            ),
+            
+           Align(
+           alignment: Alignment.center,//Botão "Esqueceu a senha"
+           child:ElevatedButton(
               onPressed: esqueceuSenha,
+              style: buttonStyle(),
               child: Text(
                 "Enviar",
                 style: GoogleFonts.roboto(
                   color: cinzaClaro,
-                  fontSize: 20,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(12),
-                backgroundColor: azul,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
                 ),
               ),
             ),
-            SizedBox(
+           ),
+            const SizedBox(
               height: 10,
             ),
             TextButton(
@@ -114,7 +102,7 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
                 "Voltar",
                 style: GoogleFonts.roboto(
                   color: azul,
-                  fontSize: 20,
+                  fontSize: 16,
                 ),
               ),
               onPressed: () {
@@ -133,11 +121,11 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
           .sendPasswordResetEmail(email: emailController.text.trim());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          duration: Duration(seconds: 5),
-          content: Text(
+          duration: const Duration(seconds: 5),
+          content: const Text(
             "Redefinição de senha enviada",
           ),
-          backgroundColor: vermelho,
+          backgroundColor: verde,
         ),
       );
       Navigator.pop(context);
@@ -145,8 +133,8 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
-            content: Text(
+            duration: const Duration(seconds: 5),
+            content: const Text(
               "Email não cadastro",
             ),
             backgroundColor: vermelho,
@@ -155,8 +143,8 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
-            content: Text(
+            duration: const Duration(seconds: 5),
+            content: const Text(
               "Digite corretamente o e-mail",
             ),
             backgroundColor: vermelho,

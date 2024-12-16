@@ -3,9 +3,118 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../../../Cores/cores.dart';
+import '../../../../../../../../Cores/cores.dart';
 import '../perfil_profissional_sub.dart';
 import '../primeira_busca.dart';
+
+class ContatosSalvos extends StatefulWidget {
+  const ContatosSalvos({super.key});
+
+  @override
+  State<ContatosSalvos> createState() => _ContatosSalvosState();
+}
+
+class _ContatosSalvosState extends State<ContatosSalvos> {
+  @override
+  Widget build(BuildContext context) {
+
+    //
+    String UID = FirebaseAuth.instance.currentUser!.uid.toString();
+//Ler o conteudo do banco de dados
+    Stream<List<SalvarContato>> leiacontatosSalvos() =>
+        FirebaseFirestore.instance
+            .collection("Cliente")
+            .doc(UID)
+            .collection("ContatoSalvo")
+            .snapshots()
+            .map((snapshot) => snapshot.docs
+                .map((doc) => SalvarContato.fromJson(doc.data()))
+                .toList());
+
+    return Scaffold(
+      body: SizedBox(
+        child: ListView(
+          children: [
+            SizedBox(height: 20,),
+            Padding(
+              padding: const EdgeInsets.only(left: 30),
+              child: Row(
+                children: [
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: cinza,
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: cinzaEscuro,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "Contatos Salvos",
+                    style: GoogleFonts.roboto(
+                      color: cinzaEscuro,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 5, right: 5),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.9,
+                width: MediaQuery.of(context).size.width,
+                child: StreamBuilder<List<SalvarContato>>(
+                  stream: leiacontatosSalvos(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("Something went wong! ${snapshot.error}");
+                    } else if (snapshot.hasData) {
+                      final leiaBuscar = snapshot.data!;
+
+                      // Verifica se o tamanho da lista mudou
+             
+                      return ListView.builder(
+                        itemCount: leiaBuscar.length,
+                        itemBuilder: (context, index) {
+                          final contatosSalvos = leiaBuscar[index];
+                          return listTileContatosSalvos(
+                              context, contatosSalvos);
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 //Criar e inserir no banco de dados
 Future createSalvarContato(SalvarContato salvarContato) async {
@@ -66,32 +175,20 @@ class SalvarContato {
       );
 }
 
-String UID = FirebaseAuth.instance.currentUser!.uid.toString();
-//Ler o conteudo do banco de dados
-Stream<List<SalvarContato>> leiaContatoSalvos() => FirebaseFirestore.instance
-    .collection("Cliente")
-    .doc(UID)
-    .collection("ContatoSalvo")
-    .snapshots()
-    .map((snapshot) => snapshot.docs
-        .map((doc) => SalvarContato.fromJson(doc.data()))
-        .toList());
-
-//Solicitação de clientes
-Widget listTileContatoSalvos(
+//
+Widget listTileContatosSalvos(
   context,
-  contatoSalvos,
+  contatosSalvos,
 ) =>
     Padding(
       padding: const EdgeInsets.only(bottom: 15, right: 10, left: 10),
       child: GestureDetector(
         onLongPress: () {
-          popUpExcluirContatoSalvo(context, contatoSalvos.id);
+          popUpExcluirContatoSalvo(context, contatosSalvos.id);
         },
         child: Container(
-          
           child: ListTile(
-            leading: contatoSalvos.imagemPrincipalUrl.isNotEmpty
+            leading: contatosSalvos.imagemPrincipalUrl.isNotEmpty
                 ? Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
@@ -99,7 +196,7 @@ Widget listTileContatoSalvos(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
-                        contatoSalvos.imagemPrincipalUrl,
+                        contatosSalvos.imagemPrincipalUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -107,27 +204,26 @@ Widget listTileContatoSalvos(
                     width: 60,
                   )
                 : SizedBox(),
-            onTap: contatoSalvos.imagemPrincipalUrl.isNotEmpty
+            onTap: contatosSalvos.imagemPrincipalUrl.isNotEmpty
                 ? () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => PerfilProfissional(
-                          contatoSalvos.email,
+                          contatosSalvos.email,
                         ),
                       ),
                     );
                   }
                 : () {
                     abrirWhatsApp(
-                      contatoSalvos.whatsAppContato,
-                      contatoSalvos.nome,
+                      contatosSalvos.whatsAppContato,
+                      contatosSalvos.nome,
                     );
                   },
-            
             title: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Text(
-                "${contatoSalvos.nome}",
+                "${contatosSalvos.nome}",
                 style: GoogleFonts.roboto(
                   color: cinzaEscuro,
                   fontSize: 21,
@@ -140,7 +236,7 @@ Widget listTileContatoSalvos(
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "${contatoSalvos.whatsAppContato}",
+                    "${contatosSalvos.whatsAppContato}",
                     style: GoogleFonts.roboto(
                       color: cinzaEscuro,
                       fontSize: 14,
@@ -150,14 +246,14 @@ Widget listTileContatoSalvos(
                 SizedBox(
                   height: 10,
                 ),
-                contatoSalvos.profissionalSelecionada != '' &&
-                        contatoSalvos.cidadeEstadoSelecionada != ''
+                contatosSalvos.profissionalSelecionada != '' &&
+                        contatosSalvos.cidadeEstadoSelecionada != ''
                     ? Container(
                         height: 35,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
-                            contatoSalvos.profissionalSelecionada != ''
+                            contatosSalvos.profissionalSelecionada != ''
                                 ? Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -170,7 +266,7 @@ Widget listTileContatoSalvos(
                                           top: 8,
                                           bottom: 8),
                                       child: Text(
-                                        contatoSalvos.profissionalSelecionada,
+                                        contatosSalvos.profissionalSelecionada,
                                         style: GoogleFonts.roboto(
                                           color: cinzaClaro,
                                         ),
@@ -181,7 +277,7 @@ Widget listTileContatoSalvos(
                             SizedBox(
                               width: 5,
                             ),
-                            contatoSalvos.cidadeEstadoSelecionada != ''
+                            contatosSalvos.cidadeEstadoSelecionada != ''
                                 ? Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -194,7 +290,7 @@ Widget listTileContatoSalvos(
                                           top: 8,
                                           bottom: 8),
                                       child: Text(
-                                        contatoSalvos.cidadeEstadoSelecionada,
+                                        contatosSalvos.cidadeEstadoSelecionada,
                                         style: GoogleFonts.roboto(
                                           color: cinzaClaro,
                                         ),
@@ -237,13 +333,13 @@ Future popUpExcluirContatoSalvo(context, id) => showDialog(
               String UID = FirebaseAuth.instance.currentUser!.uid.toString();
 
               //Deletar no banco
-              final contatoSalvos = FirebaseFirestore.instance
+              final contatosSalvos = FirebaseFirestore.instance
                   .collection("Cliente")
                   .doc(UID)
                   .collection("ContatoSalvo")
                   .doc(id);
 
-              contatoSalvos.delete();
+              contatosSalvos.delete();
               Navigator.pop(context);
 
               final snackBar = SnackBar(

@@ -23,10 +23,10 @@ class MyApp extends StatelessWidget {
       title: 'Staircase Cliente',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-       colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 5, 21, 126)),
+       colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 5, 21, 126)),
         useMaterial3: true,
       ),
-      home: const ChecagemPage(),
+      home: const ChecagemPage()
     );
   }
 }

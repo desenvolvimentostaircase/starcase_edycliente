@@ -1,14 +1,14 @@
-import 'package:edywasacliente/Login/Home/HomePrincipal/home_principal.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:edywasacliente/Login/auth_service.dart';
+import 'package:edywasacliente/Personalizados/BotaoStyle.dart';
+import 'package:edywasacliente/Personalizados/CampoPersonalizado.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../Cores/cores.dart';
-import '../firebase_analytics_registro_login.dart';
 import 'Cadastro/cadastro_page.dart';
-
 import 'esqueci_senha/esqueci_senha.dart';
+import 'Home/HomePrincipal/home_principal.dart';
+import '../Cores/cores.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,206 +18,258 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _firebaseAuth = FirebaseAuth.instance;
   bool _obscureText = true;
-  //
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: cinzaClaro,
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(25),
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            "Login",
-            style: GoogleFonts.roboto(
-              color: azul,
-              fontWeight: FontWeight.bold,
-              fontSize: 40,
-            ),
-          ),
-          Text(
-            "Entre no app para conhecer os profissionais",
-            style: GoogleFonts.roboto(
-              color: cinzaEscuro,
-              fontSize: 15,
-            ),
-          ),
-          SizedBox(
-            height: 50,
-          ),
-
-          //E-mail
-
-          TextFormField(
-            style: GoogleFonts.roboto(
-              color: cinzaEscuro,
-              fontSize: 18,
-            ),
-            cursorColor: azul,
-            controller: _emailController,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: cinza,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(
-                  color: cinza,
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0), // Espaço superior
+              child: Center(
+                child: Image.asset(
+                  'assets/logo.png', // Caminho do logo
+                  width: 250, // Largura do logo
+                  height: 100, // Altura do logo
                 ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(
+            ),
+            Center(
+              child: Text(
+                "Login",
+                style: GoogleFonts.roboto(
                   color: azul,
-                  width: 3,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
                 ),
               ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(
-                  color: vermelho,
-                  width: 3,
-                ),
-              ),
-              hintText: "E-mail",
-              hintStyle: GoogleFonts.roboto(
-                color: cinzaEscuro.withOpacity(0.5),
-              ),
             ),
-          ),
-
-          SizedBox(
-            height: 10,
-          ),
-          //Senha
-          Container(
-            height: 55,
-            decoration: BoxDecoration(
-              color: cinza,
-              borderRadius: BorderRadius.circular(
-                50,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 10),
-              child: TextField(
+            const SizedBox(height: 5),
+            Center(
+              child: Text(
+                "Entre no app para conhecer os profissionais",
                 style: GoogleFonts.roboto(
                   color: cinzaEscuro,
-                  fontSize: 18,
+                  fontSize: 15,
                 ),
-                cursorColor: azul,
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: cinza,
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: cinza,
-                      width: 2,
-                    ),
-                  ),
-                  hintText: "Senha",
-                  hintStyle: GoogleFonts.roboto(
-                    color: cinzaEscuro.withOpacity(0.5),
-                  ),
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                    child: Icon(
-                      size: 32,
-                      color: azul,
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
-                    ),
-                  ),
-                ),
-                obscureText: _obscureText,
               ),
             ),
-          ),
-          //Botão de "Esqueceu a senha"
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              child: Text(
-                "Esqueci a senha",
-                style: GoogleFonts.roboto(
-                  color: azul,
-                  fontSize: 20,
+            const SizedBox(height: 30),
+
+            // Campo E-mail
+            CampoPersonalizado(
+              controller: _emailController, // Controller do campo de e-mail
+              hintText: "E-mail", // Texto que aparece quando o campo está vazio
+              fillColor: cinza, // Cor de fundo do campo
+              borderColor: cinza, // Cor da borda quando não está em foco
+              focusedBorderColor:
+                  azul, // Cor da borda quando o campo está em foco
+              hintStyle: GoogleFonts.roboto(
+                // Estilo do texto de dica
+                color: cinzaEscuro.withOpacity(0.5),
+              ),
+              textStyle: GoogleFonts.roboto(
+                // Estilo do texto dentro do campo
+                color: cinzaEscuro,
+                fontSize: 17,
+              ), validator: (value) {
+                return null;
+                },
+            ),
+            const SizedBox(height: 10),
+
+            // Campo Senha 
+            CampoPersonalizado(
+              controller: _passwordController, // Controller do campo de senha
+              hintText: "Senha", // Texto que aparece quando o campo está vazio
+              obscureText: _obscureText, // Mostra ou oculta a senha
+              onSuffixIconTap: () {
+                setState(() {
+                  _obscureText =
+                      !_obscureText; // Alterna a visibilidade da senha
+                });
+              },
+              suffixIcon: _obscureText
+                  ? Icons.visibility
+                  : Icons.visibility_off, // Ícone de visibilidade da senha
+              fillColor: cinza, // Cor de fundo do campo
+              borderColor: cinza, // Cor da borda quando não está em foco
+              focusedBorderColor:
+                azul, // Cor da borda quando o campo está em foco
+                hintStyle: GoogleFonts.roboto(
+                color: cinzaEscuro.withOpacity(0.5),
+              ),
+              textStyle: GoogleFonts.roboto(
+                // Estilo do texto dentro do campo
+                color: cinzaEscuro,
+                fontSize: 17,
+              ), validator: (value) {
+                return null;
+                },
+            ),
+
+            const SizedBox(height: 30),
+
+            // Botão "Entrar"
+            Center(
+              child: ElevatedButton(
+                onPressed: login,
+                style: buttonStyle(),
+                child: Text(
+                  "Entrar",
+                  style: GoogleFonts.roboto(
+                    color: cinzaClaro,
+                  ),
                 ),
               ),
+            ),
+
+            // Botão de "Esqueceu a senha"
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                child: Text(
+                  "Esqueci a senha",
+                  style: GoogleFonts.roboto(
+                    color: azul,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const EsqueceuSenha(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // Botão "Criar conta"
+            TextButton(
               onPressed: () {
-                Navigator.of(context).push(
+                Navigator.push(
+                  context,
                   MaterialPageRoute(
-                    builder: (context) => const EsqueceuSenha(),
+                    builder: (context) => const CadastroPage(),
                   ),
                 );
               },
-            ),
-          ),
-          //
-
-          //
-          SizedBox(
-            height: 60,
-          ),
-          //
-          //Botão "Entrar"
-          ElevatedButton(
-            onPressed: login,
-            child: Text(
-              "Entrar",
-              style: GoogleFonts.roboto(
-                color: cinzaClaro,
-                fontSize: 20,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(10),
-              backgroundColor: azul,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
-          ),
-          //Botão "Criar conta"
-          SizedBox(
-            height: 10,
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CadastroPage(),
+              child: Text(
+                "Criar conta",
+                style: GoogleFonts.roboto(
+                  color: azul,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
-            },
-            child: Text(
-              "Criar conta",
-              style: GoogleFonts.roboto(
-                color: azul,
-                fontSize: 20,
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+
+            // Texto "OU"
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 1, // Espessura da linha
+                    color: Colors.black, // Cor da linha
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    "Ou",
+                    style: GoogleFonts.roboto(
+                      color: azul,
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    height: 1, // Espessura da linha
+                    color: Colors.black, // Cor da linha
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+
+            // Texto Conecte-se
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Conecte-se com",
+                style: GoogleFonts.roboto(
+                  color: azul,
+                  fontSize: 17,
+                ),
+              ),
+            ),
+            const SizedBox(height: 60),
+
+            // Ícones das redes sociais para logar
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    AuthService authService = AuthService();
+                    User? user = await authService.signInWithGoogle();
+
+                    if (user != null) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePrincipal(),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Erro ao realizar login com Google."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: SvgPicture.asset(
+                    'assets/google.svg', // Caminho do ícone do Google
+                    width: 40,
+                    height: 40,
+                    semanticsLabel: 'Login com Google',
+                  ),
+                ),
+                const SizedBox(width: 80),
+                SvgPicture.asset(
+                  'assets/facebook.svg', // Caminho do ícone do Facebook
+                  width: 50,
+                  height: 50,
+                ),
+                const SizedBox(width: 80),
+                SvgPicture.asset(
+                  'assets/x.svg', // Caminho do ícone do X (Twitter)
+                  width: 40,
+                  height: 40,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
+  // Função de login
   login() async {
     try {
       UserCredential userCredential =
@@ -225,23 +277,18 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      if (userCredential != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePrincipal(),
-          ),
-        );
-        //Resgistro de evento de login
-        logLoginEvent();
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePrincipal(),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
             content: Text(
-              "Úsuario não encontrado",
+              "Usuário não encontrado",
               style: GoogleFonts.roboto(
                 color: cinzaClaro,
               ),
@@ -252,7 +299,6 @@ class _LoginPageState extends State<LoginPage> {
       } else if (e.code == 'wrong-password') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
             content: Text(
               "Sua senha está errada",
               style: GoogleFonts.roboto(
@@ -265,9 +311,8 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            duration: Duration(seconds: 5),
             content: Text(
-              "Preencha corretamente o e-mail ou a Senha",
+              "Preencha corretamente o e-mail ou a senha",
               style: GoogleFonts.roboto(
                 color: cinzaClaro,
               ),

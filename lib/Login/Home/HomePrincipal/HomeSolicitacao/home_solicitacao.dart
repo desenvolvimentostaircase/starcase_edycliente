@@ -1,30 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:edywasacliente/servicos/firebaseapi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-
-
-
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 import '../../../../Cores/cores.dart';
 import '../../../../ads/ads.dart';
+import 'package:another_telephony/telephony.dart';
 
 class HomeSolicitacao extends StatefulWidget {
   const HomeSolicitacao({super.key});
-     
 
   @override
   State<HomeSolicitacao> createState() => _HomeSolicitacaoState();
 }
 
 class _HomeSolicitacaoState extends State<HomeSolicitacao> {
-   final NotificationService notificationService = NotificationService();
-   final String profissionalToken = 'fjIfeWvqTIexy3duuqHA2M:APA91bF-pVGVuWIyIRqy_xhOPFFGRUu6kq4ySYWLIWQpprTRQQqwuuc9AB8LWQVQ2zGqDDM5RDRYsHF4P-cU0aSFzeuMF7lCwRqzYlYmMD_MUVyjtrCXx3MN7plpsjlbf1wYk_bQW0QV';
 
   List<String> listItemsCidadeEstado = <String>[
-    "Três Lagoas - MS",
+   "Três Lagoas - MS",
+  "Andradina - SP",
+  "Ilha Solteira - SP",
+  "Castilho - SP",
+  "Tupã - SP",
   ];
 
   List<String> listItemsProfissional = <String>[
@@ -138,6 +138,63 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
   final TextEditingController _solicitacaoTextEditingController =
       TextEditingController();
 
+
+//Estrutura de envio de mensagem via SMS
+
+       //final Telephony telephony = Telephony.instance;
+  //String _message = "";
+
+  //@override
+  //void initState() {
+  //  super.initState();
+  //  initPlatformState();
+  //}
+
+  //Future<void> initPlatformState() async {
+  //  final bool? result = await telephony.requestSmsPermissions;
+  //  if (result != null && result) {
+  //    setState(() {
+  //      _message = "Permissão concedida";
+  //    });
+  //  } else {
+  //    setState(() {
+  //      _message = "Permissão negada";
+  //    });
+  //  }
+  //}
+
+  //void sendSms(String message, String number) async {
+  //  await telephony.sendSms(
+  //    to: number,
+  //    message: message,
+  //  );
+  //  setState(() {
+  //    _message = "SMS enviado para $number";
+  //  });
+  //}
+
+  //
+
+  void enviarEmailDireto(String para, String assunto, String mensagem) async {
+  String username = 'suportestaircase@gmail.com'; 
+  String password = "yreh mmca kaix xmsy"; 
+
+  final smtpServer = gmail(username, password);
+
+  final email = Message()
+    ..from = Address(username, 'Suporte Staircase')
+    ..recipients.add(para)
+    ..subject = assunto
+    ..text = mensagem;
+
+  try {
+    final sendReport = await send(email, smtpServer);
+    print('Email enviado: ' + sendReport.toString());
+  } on MailerException catch (e) {
+    print('Erro ao enviar email: $e');
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     Widget ListTileDadosSolictacaoCliente(
@@ -181,7 +238,7 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                       ),
 
                       ///
-                      const SizedBox(
+                      SizedBox(
                         width: 5,
                       ),
 
@@ -213,7 +270,7 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
               ),
               subtitle: Column(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
                   Align(
@@ -223,7 +280,7 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                       style: GoogleFonts.roboto(fontSize: 16),
                     ),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -263,20 +320,9 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
 
                             solicitacaoCliente.delete();
 
-                            //Deletar no banco Geral
-                            final solicitacaoClienteGeral = FirebaseFirestore
-                                .instance
-                                .collection("Solicitação Geral")
-                                .doc(dadosSolicitacaoCliente.profissional)
-                                .collection(
-                                    dadosSolicitacaoCliente.cidadeEstado)
-                                .doc(dadosSolicitacaoCliente.idGeral);
-
-                            solicitacaoClienteGeral.delete();
-
                             final snackBar = SnackBar(
                               backgroundColor: azul,
-                              content: const Text('Solicitação excluido com sucesso'),
+                              content: Text('Solicitação excluido com sucesso'),
                             );
 
                             ScaffoldMessenger.of(context)
@@ -298,41 +344,38 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
         padding: const EdgeInsets.all(25),
         child: ListView(
           children: [
-          
-             
-              Row(
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: azul
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        
-                        Icons.arrow_back,
+            Row(
+              children: [
+                Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10), color: azul),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
                       color: cinzaClaro,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
                     ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  const SizedBox(width: 10,),
-                  Text(
-                    "Solicitações",
-                    style: GoogleFonts.roboto(
-                      color: azul,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 40,
-                    ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Solicitações",
+                  style: GoogleFonts.roboto(
+                    color: azul,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40,
                   ),
-                ],
-              ),
-            
-            const SizedBox(
+                ),
+              ],
+            ),
+
+            SizedBox(
               height: 5,
             ),
             Text(
@@ -389,7 +432,6 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
             color: cinzaClaro,
           ),
         ),
-        
         icon: Icon(
           Icons.list_alt_rounded,
           color: cinzaClaro,
@@ -412,23 +454,19 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
           title: Text(
             "Enviar",
             style: GoogleFonts.roboto(
-              fontSize: 40,
-              color: azul,
+              fontSize: 25,
+              color: cinzaEscuro,
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: SizedBox(
+          content: Container(
             height: MediaQuery.sizeOf(context).width * 0.8,
             width: MediaQuery.sizeOf(context).width * 0.9,
             child: Form(
               key: formKey,
               child: ListView(
                 children: [
-                  const Text("Preencha os campos conforme as suas habilidades"),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  //Solcitação
+                  //Solicitação
 
                   TextFormField(
                     style: GoogleFonts.roboto(
@@ -493,7 +531,7 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                     },
                   ),
 
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
 
@@ -511,7 +549,7 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                                 _profissionalTextEditingController.clear();
                               });
                             },
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.close,
                             ),
                           ),
@@ -574,7 +612,7 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                   ),
 
                   ///detalhes do profissional
-                  const SizedBox(
+                  SizedBox(
                     height: 10,
                   ),
 
@@ -592,7 +630,7 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                                 _cidadeEstadoTextEditingController.clear();
                               });
                             },
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.close,
                             ),
                           ),
@@ -660,6 +698,12 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
           actions: [
             ///Voltar
             ElevatedButton(
+              child: Text(
+                "Voltar",
+                style: GoogleFonts.roboto(
+                  color: azul,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: 10, bottom: 10),
@@ -671,16 +715,13 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text(
-                "Voltar",
-                style: GoogleFonts.roboto(
-                  color: azul,
-                ),
-              ),
             ),
 
             ///Confirmar
             FilledButton(
+              child: Text(
+                "Confirmar",
+              ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, top: 10, bottom: 10),
@@ -690,7 +731,6 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                 ),
               ),
               onPressed: () async {
-                
                 DocumentSnapshot doc = await FirebaseFirestore.instance
                     .collection('Cliente')
                     .doc(UID)
@@ -698,13 +738,15 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                     .doc('Dados')
                     .get();
 
-                String nomeSelecionado = doc['Nome'];
-                String whatsAppSelecionado = doc['WhatsAppContato'];
+                String _nomeSelecionado = doc['Nome'];
+                String _whatsAppSelecionado = doc['WhatsAppContato'];
+                String _imagemPrincipalUrl = doc['ImagemPrincipalUrl'];
+
                 //
                 //data atual
                 final DateTime now = DateTime.now();
                 final DateFormat formatter = DateFormat('dd/MM/yyyy');
-                final String dataformatada = formatter.format(now);
+                final String dataFormatada = formatter.format(now);
 
                 final isValidForm = formKey.currentState!.validate();
 
@@ -721,43 +763,29 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                   await docRef.set({
                     'CidadeEstado': _cidadeEstadoSelecionado,
                     'Profissional': _profissionalSelecionado,
-                    'Data': dataformatada,
+                    'Data': dataFormatada,
                     'Solicitação': _solicitacaoSelecionado,
-                    'Nome': nomeSelecionado,
-                    'WhatsApp': whatsAppSelecionado,
+                    'Nome': _nomeSelecionado,
+                    'WhatsApp': _whatsAppSelecionado,
                     'Id': id,
                   }, SetOptions(merge: true));
-
-                  //Adicionar no banco local
-                  final dadosSolicitacaoGeralCliente = DadosSolicitacaoCliente(
-                    cidadeEstado: _cidadeEstadoSelecionado,
-                    profissional: _profissionalSelecionado,
-                    data: dataformatada,
-                    solicitacao: _solicitacaoSelecionado,
-                    nome: nomeSelecionado,
-                    whatsApp: whatsAppSelecionado,
-                  );
-                  createSolicitacaoGeralCliente(dadosSolicitacaoGeralCliente);
-
-                  ///Adicionar no banco
-                  DocumentSnapshot doc = await FirebaseFirestore.instance
-                      .collection('Solicitação Geral')
-                      .doc(dadosSolicitacaoGeralCliente.profissional)
-                      .collection(dadosSolicitacaoGeralCliente.cidadeEstado)
-                      .doc(dadosSolicitacaoGeralCliente.id)
-                      .get();
-
-                  String idGeral = doc['Id'];
 
                   final dadosSolicitacaoCliente = DadosSolicitacaoCliente(
                       cidadeEstado: _cidadeEstadoSelecionado,
                       profissional: _profissionalSelecionado,
-                      data: dataformatada,
+                      data: dataFormatada,
                       solicitacao: _solicitacaoSelecionado,
-                      nome: nomeSelecionado,
-                      whatsApp: whatsAppSelecionado,
-                      idGeral: idGeral);
-
+                      nome: _nomeSelecionado,
+                      whatsApp: _whatsAppSelecionado,
+                      imagemPrincipalUrl: _imagemPrincipalUrl);
+                  createEnvioSolicitacao(
+                      _cidadeEstadoSelecionado,
+                      _profissionalSelecionado,
+                      _solicitacaoSelecionado,
+                      _nomeSelecionado,
+                      _imagemPrincipalUrl,
+                      dataFormatada,
+                      _whatsAppSelecionado);
                   createSolicitacaoCliente(dadosSolicitacaoCliente);
 
                   _solicitacaoTextEditingController.clear();
@@ -765,21 +793,10 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
                   _cidadeEstadoTextEditingController.clear();
 
                   Navigator.pop(context);
-               
-                  
                 }
+                //
 
-             // Chame o método de envio de notificação
-                await notificationService.sendNotification(
-                  profissionalToken,
-                  'Nova Solicitação',
-                  'Você tem uma nova solicitação!',
-                );
-          
-              },
-              child: const Text(
-                "Confirmar",
-              ),
+                 },
             ),
           ],
         ),
@@ -790,7 +807,8 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
     String UID = FirebaseAuth.instance.currentUser!.uid.toString();
 
     //
-    //Inserir ou criar informação no banco de dados
+    //Inserir ou criar informação no banco de dados em que o cliente consiguirá olhar no proprio app cliente em sua conta
+
     final docBuscar = FirebaseFirestore.instance
         .collection('Cliente')
         .doc(UID)
@@ -803,26 +821,92 @@ class _HomeSolicitacaoState extends State<HomeSolicitacao> {
     await docBuscar.set(json);
   }
 
-  Future createSolicitacaoGeralCliente(
-      DadosSolicitacaoCliente dadosSolictacaoCliente) async {
-    //
-    //Inserir ou criar informação no banco de dados
-    final docBuscar = FirebaseFirestore.instance
-        .collection('Solicitação Geral')
-        .doc(_profissionalSelecionado)
-        .collection(_cidadeEstadoSelecionado)
-        .doc();
+//
+  Future<void> createEnvioSolicitacao(
+      String cidadeEstado,
+      String profissional,
+      String solicitacao,
+      String nome,
+      String imagemPrincipalUrl,
+      String data,
+      String _whatsAppSelecionado) async {
 
-    dadosSolictacaoCliente.id = docBuscar.id;
+    // Variável para armazenar os emails
+    List<String> emailList = [];
+    // Variável para armazenar os emails
+    List<String> whatsAppContatoList = [];
 
-    final json = dadosSolictacaoCliente.toJson();
-    await docBuscar.set(json);
+    //Resgate dos emails que estão cadastrados em determinadas habilidades/profissionais
+    try {
+      // Resgata todos os documentos da subcoleção 'Profissional' com base em 'cidadeEstado'
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('Envio Solicitação')
+          .doc(
+              cidadeEstado) // Usa a variável cidadeEstado para acessar o documento correto
+          .collection(
+              profissional) // Usa a variável Profissional para acessar a subcoleção
+          .get();
+
+      // Itera sobre os documentos e extrai o campo 'Email' e 'WhatsAppContato'
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        if (doc.exists && doc['Email'] != null) {
+          // Adiciona o email à lista
+          emailList.add(doc['Email']);
+        }
+        if (doc.exists && doc['WhatsAppContato'] != null) {
+          // Adiciona o email à lista
+          whatsAppContatoList.add(doc['WhatsAppContato']);
+        }
+      }
+
+      // Índice para o while loop
+      int i = 0;
+
+      //Conexão Twilio
+
+      // Loop while para iterar sobre os emails de profissionais e fazer a solicitação
+      while (i < emailList.length) {
+        print("valor de i: $i");
+
+        String email = emailList[i];
+        //String whatsAppContato = whatsAppContatoList[i];
+
+        // Envia uma solicitação para outra parte do banco de dados usando o email - Inicio
+        final docRef = _firestore
+            .collection('Profissional')
+            .doc(email)
+            .collection('Solicitação')
+            .doc();
+
+        final id = docRef.id;
+
+        await docRef.set({
+          "Solicitação": solicitacao,
+          "Nome": nome,
+          "ImagemPrincipalUrl": imagemPrincipalUrl,
+          "Data": data,
+          "WhatsAppContato": _whatsAppSelecionado,
+          "Id": id
+        }, SetOptions(merge: true));
+        // Envia uma solicitação para outra parte do banco de dados usando o email - Fim
+
+        //sendSms("Solicitação - Staircase Profissional\n\nTemos uma solicitação para você abra o app Staircase Profissional e confira.", "+55$whatsAppContato");
+
+        ///envia email para os respectivos profissionais que se cadastraram para receber notificações de solicitações
+        enviarEmailDireto(email, "Solicitação - Staircase Profissional", "Temos uma solicitação para você abra o app Staircase Profissional e confira.");
+
+            // Incrementa o índice
+        i++;
+      }
+    } catch (e) {
+      print('Erro ao buscar emails ou processar a solicitação: $e');
+    }
   }
 }
 
 class DadosSolicitacaoCliente {
   String id;
-  String idGeral;
+  final String imagemPrincipalUrl;
   final String profissional;
   final String cidadeEstado;
   final String solicitacao;
@@ -832,7 +916,7 @@ class DadosSolicitacaoCliente {
 
   DadosSolicitacaoCliente({
     this.id = '',
-    this.idGeral = '',
+    required this.imagemPrincipalUrl,
     required this.profissional,
     required this.cidadeEstado,
     required this.solicitacao,
@@ -843,7 +927,7 @@ class DadosSolicitacaoCliente {
 
   Map<String, dynamic> toJson() => {
         'Id': id,
-        'IdGeral': idGeral,
+        'ImagemPrincipalUrl': imagemPrincipalUrl,
         'Profissional': profissional,
         'CidadeEstado': cidadeEstado,
         'Solicitação': solicitacao,
@@ -855,8 +939,8 @@ class DadosSolicitacaoCliente {
   static DadosSolicitacaoCliente fromJson(Map<String, dynamic> json) =>
       DadosSolicitacaoCliente(
         id: json["Id"] ?? '',
-        idGeral: json["IdGeral"] ?? '',
         profissional: json['Profissional'] ?? '',
+        imagemPrincipalUrl: json['ImagemPrincipalUrl'] ?? '',
         cidadeEstado: json['CidadeEstado'] ?? '',
         solicitacao: json['Solicitação'] ?? '',
         nome: json['Nome'] ?? '',
@@ -864,4 +948,3 @@ class DadosSolicitacaoCliente {
         whatsApp: json['WhatsAppContato'] ?? '',
       );
 }
-

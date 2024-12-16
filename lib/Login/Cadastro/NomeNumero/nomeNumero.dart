@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:edywasacliente/Login/Home/HomePrincipal/home_principal.dart';
+import 'package:edywasacliente/Personalizados/BotaoStyle.dart';
+import 'package:edywasacliente/Personalizados/CampoPersonalizado.dart';
+import '../../Home/HomePrincipal/home_principal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,7 +37,7 @@ class _NomeState extends State<Nome> {
         child: ListView(
           padding: const EdgeInsets.all(25),
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Text(
@@ -53,100 +55,68 @@ class _NomeState extends State<Nome> {
                 fontSize: 15,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
-            //Nome
-            Container(
-              decoration: BoxDecoration(
-                color: cinza,
-                borderRadius: BorderRadius.circular(50),
+
+            // Campo Nome
+
+            CampoPersonalizado(
+              controller: _nomeController, // Controller do campo de nome
+              hintText: "E-mail", // Texto que aparece quando o campo está vazio
+              fillColor: cinza, // Cor de fundo do campo
+              borderColor: cinza, // Cor da borda quando não está em foco
+              focusedBorderColor:
+                  azul, // Cor da borda quando o campo está em foco
+              hintStyle: GoogleFonts.roboto(
+                // Estilo do texto de dica
+                color: cinzaEscuro.withOpacity(0.5),
               ),
-              height: 55,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value!.length < 1) {
-                      return "Preenche o seu nome meu chapa";
-                    } else if (value.length > 30) {
-                      return "Reduz seu nome ai pfv ta muito grande";
-                    }
-                  },
-                  cursorColor: azul,
-                  controller: _nomeController,
-                  style: GoogleFonts.roboto(
-                    color: cinzaEscuro,
-                    fontSize: 17,
-                  ),
-                  decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: cinza,
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: cinza,
-                          width: 2,
-                        ),
-                      ),
-                      hintText: "Nome",
-                      hintStyle: GoogleFonts.roboto(
-                        color: cinzaEscuro.withOpacity(0.5),
-                      )),
-                ),
+              textStyle: GoogleFonts.roboto(
+                // Estilo do texto dentro do campo
+                color: cinzaEscuro,
+                fontSize: 17,
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Preencha o seu nome, meu chapa";
+                } else if (value.length > 30) {
+                  return "Reduza seu nome, por favor. Está muito grande.";
+                }
+                return null;
+              },
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             //WhatsAppContato
-            Container(
-              decoration: BoxDecoration(
-                color: cinza,
-                borderRadius: BorderRadius.circular(50),
+             CampoPersonalizado(
+              controller: _whatsAppContatoController, // Controller do campo de nome
+              hintText: "Whatsapp", // Texto que aparece quando o campo está vazio
+              fillColor: cinza, // Cor de fundo do campo
+              borderColor: cinza, // Cor da borda quando não está em foco
+              focusedBorderColor:
+                  azul, // Cor da borda quando o campo está em foco
+              hintStyle: GoogleFonts.roboto(
+                // Estilo do texto de dica
+                color: cinzaEscuro.withOpacity(0.5),
               ),
-              height: 55,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFormField(
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
+              textStyle: GoogleFonts.roboto(
+                // Estilo do texto dentro do campo
+                color: cinzaEscuro,
+                fontSize: 17,
+              ),
+              validator: (value) {
                     if (value!.length != 11) {
                       return 'Numero de zap tem 11 digitos irmão';
                     } else {
                       null;
                     }
+                    return null;
                   },
-                  cursorColor: azul,
-                  controller: _whatsAppContatoController,
-                  style: GoogleFonts.roboto(
-                    color: cinzaEscuro,
-                    fontSize: 17,
-                  ),
-                  decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: cinza,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: cinza,
-                        width: 2,
-                      ),
-                    ),
-                    hintText: "WhatsApp",
-                    hintStyle: GoogleFonts.roboto(
-                      color: cinzaEscuro.withOpacity(0.5),
-                    ),
-                  ),
-                ),
-              ),
             ),
-            SizedBox(
-              height: 60,
+            const SizedBox(
+              height: 30,
             ),
             _isLoading
                 ? const SizedBox(
@@ -154,23 +124,18 @@ class _NomeState extends State<Nome> {
                     width: 50,
                     child: CircularProgressIndicator(),
                   )
-                : ElevatedButton(
-                    onPressed: _handleFinalizar,
-                    child: Text(
-                      "Finalizar",
-                      style: GoogleFonts.roboto(
-                        color: cinzaClaro,
-                        fontSize: 20,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.all(12),
-                      backgroundColor: azul,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
+                : Center(
+              child: ElevatedButton(
+                onPressed: _handleFinalizar,
+                style: buttonStyle(),
+                child: Text(
+                  "Entrar",
+                  style: GoogleFonts.roboto(
+                    color: cinzaClaro,
                   ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -235,7 +200,6 @@ class _NomeState extends State<Nome> {
         'Nome': _nomeController.text,
         'WhatsAppContato': _whatsAppContatoController.text,
         'Id': id,
-        
         'Data': dataFormatada,
       }, SetOptions(merge: true));
 
@@ -279,6 +243,7 @@ class _NomeState extends State<Nome> {
 class PerfilDados {
   String id;
   String idGeral;
+  final String imagemPrincipalUrl;
   final String nome;
   final String detalhes;
   final String email;
@@ -296,6 +261,7 @@ class PerfilDados {
   PerfilDados({
     this.id = '',
     this.idGeral = '',
+    this.imagemPrincipalUrl = '',
     required this.nome,
     this.detalhes = "",
     required this.email,
@@ -313,6 +279,7 @@ class PerfilDados {
   Map<String, dynamic> toJson() => {
         'Id': id,
         'IdGeral': idGeral,
+        'ImagemPrincipalUrl': imagemPrincipalUrl,
         'Nome': nome,
         'Detalhes': detalhes,
         'Email': email,
@@ -330,6 +297,7 @@ class PerfilDados {
   static PerfilDados fromJson(Map<String, dynamic> json) => PerfilDados(
         id: json["Id"] ?? '',
         idGeral: json["IdGeral"] ?? '',
+        imagemPrincipalUrl: json['ImagemPrincipalUrl'] ?? '',
         nome: json['Nome'] ?? '',
         detalhes: json['Detalhes'] ?? '',
         email: json['Email'] ?? '',
