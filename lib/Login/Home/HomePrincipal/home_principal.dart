@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edywasacliente/Login/Home/HomePrincipal/NosIndiqueProfissionais/nos_indique_profissionais.dart';
+import 'package:edywasacliente/services/buscarnome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../AppBar/Custom_AppBarDrawer.dart';
 import 'HomeListaContatos/Buscar/buscar.dart';
@@ -23,33 +24,18 @@ class HomePrincipal extends StatefulWidget {
 }
 
 class _HomePrincipalState extends State<HomePrincipal> {
-   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  String? _userName; // Variável para armazenar o nome do usuário
+   String _userName = 'Usuário'; // Valor padrão
 
    @override
   void initState() {
     super.initState();
-    _getUserDetails(); // Carrega o nome do usuário ao inicializar o estado
+    _carregarNomeUsuario();// Carrega o nome do usuário ao inicializar o estado
   }
 
-   Future<void> _getUserDetails() async {
-    try {
-      final User? user = _firebaseAuth.currentUser;
-      if (user != null) {
-        setState(() {
-          _userName = user.displayName ?? user.email?.split('@')[0] ?? 'Usuário'; // Primeiro tenta obter o nome do displayName, depois tenta usar o primeiro nome do e-mail
-        });
-      } else {
-        setState(() {
-          _userName = 'Usuário não encontrado';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _userName = 'Erro ao carregar usuário';
-      });
-      debugPrint('Erro ao obter detalhes do usuário: $e');
-    }
+// Chama a função no arquivo separado
+  Future<void> _carregarNomeUsuario() async {
+    _userName = await carregarNomeUsuario(); 
+    setState(() {});
   }
 
   abrirInstagram() async {
@@ -130,7 +116,7 @@ class _HomePrincipalState extends State<HomePrincipal> {
                     style: GoogleFonts.roboto(
                       color: azul,
                       fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
+                      
                       fontSize: 20,
                     ),
                   ),
@@ -657,3 +643,7 @@ class _HomePrincipalState extends State<HomePrincipal> {
         ),
       );
 }
+
+
+
+

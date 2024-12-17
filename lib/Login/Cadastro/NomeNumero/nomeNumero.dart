@@ -63,7 +63,7 @@ class _NomeState extends State<Nome> {
 
             CampoPersonalizado(
               controller: _nomeController, // Controller do campo de nome
-              hintText: "E-mail", // Texto que aparece quando o campo está vazio
+              hintText: "Nome", // Texto que aparece quando o campo está vazio
               fillColor: cinza, // Cor de fundo do campo
               borderColor: cinza, // Cor da borda quando não está em foco
               focusedBorderColor:
@@ -129,7 +129,7 @@ class _NomeState extends State<Nome> {
                 onPressed: _handleFinalizar,
                 style: buttonStyle(),
                 child: Text(
-                  "Entrar",
+                  "Finalizar",
                   style: GoogleFonts.roboto(
                     color: cinzaClaro,
                   ),

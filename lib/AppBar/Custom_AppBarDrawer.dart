@@ -59,18 +59,21 @@ PreferredSizeWidget customAppBar(BuildContext context) {
                 Row(
                   children: [
                     Text(
-                      'São Paulo', // Cidade atual (substituir pela lógica dinâmica)
+                      'Tupã', // Cidade atual (substituir pela lógica dinâmica)
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 16,             
                       ),
+          
                     ),
                     SizedBox(width: 2),
                     Icon(Icons.location_on,
-                        color: Colors.white), // Ícone de localização
+                        color: Colors.white),
+                         // Ícone de localização
                   ],
                 ),
-                SizedBox(height: 4),
+            
+                SizedBox(height: 2),
                 Row(
                   children: [
                     Text(
