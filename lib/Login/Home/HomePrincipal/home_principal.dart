@@ -113,10 +113,9 @@ class _HomePrincipalState extends State<HomePrincipal> {
                   //Exibir nome do usuário
                   Text(
                      'Olá, $_userName!', // Nome do usuário
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.commissioner(
                       color: azul,
                       fontStyle: FontStyle.italic,
-                      
                       fontSize: 20,
                     ),
                   ),

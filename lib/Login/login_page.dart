@@ -1,9 +1,9 @@
-import 'package:edywasacliente/Login/auth_service.dart';
+import 'package:edywasacliente/services/auth_service.dart';
 import 'package:edywasacliente/Personalizados/BotaoStyle.dart';
 import 'package:edywasacliente/Personalizados/CampoPersonalizado.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Cadastro/cadastro_page.dart';
 import 'esqueci_senha/esqueci_senha.dart';
@@ -79,9 +79,10 @@ class _LoginPageState extends State<LoginPage> {
                 // Estilo do texto dentro do campo
                 color: cinzaEscuro,
                 fontSize: 17,
-              ), validator: (value) {
+              ),
+              validator: (value) {
                 return null;
-                },
+              },
             ),
             const SizedBox(height: 10),
 
@@ -92,27 +93,24 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: _obscureText, // Mostra ou oculta a senha
               onSuffixIconTap: () {
                 setState(() {
-                  _obscureText =
-                      !_obscureText; // Alterna a visibilidade da senha
+                  _obscureText = !_obscureText; // Alterna a visibilidade da senha
                 });
               },
-              suffixIcon: _obscureText
-                  ? Icons.visibility
-                  : Icons.visibility_off, // Ícone de visibilidade da senha
+              suffixIcon: _obscureText ? Icons.visibility : Icons.visibility_off, // Ícone de visibilidade da senha
               fillColor: cinza, // Cor de fundo do campo
               borderColor: cinza, // Cor da borda quando não está em foco
-              focusedBorderColor:
-                azul, // Cor da borda quando o campo está em foco
-                hintStyle: GoogleFonts.roboto(
+              focusedBorderColor: azul, // Cor da borda quando o campo está em foco
+              hintStyle: GoogleFonts.roboto(
                 color: cinzaEscuro.withOpacity(0.5),
               ),
               textStyle: GoogleFonts.roboto(
                 // Estilo do texto dentro do campo
                 color: cinzaEscuro,
                 fontSize: 17,
-              ), validator: (value) {
+              ),
+              validator: (value) {
                 return null;
-                },
+              },
             ),
 
             const SizedBox(height: 30),
@@ -224,24 +222,15 @@ class _LoginPageState extends State<LoginPage> {
                 GestureDetector(
                   onTap: () async {
                     AuthService authService = AuthService();
-                    User? user = await authService.signInWithGoogle();
+                    
 
-                    if (user != null) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePrincipal(),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Erro ao realizar login com Google."),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  },
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomePrincipal(),
+                      ),
+                    );
+                                    },
                   child: SvgPicture.asset(
                     'assets/google.svg', // Caminho do ícone do Google
                     width: 40,
@@ -249,6 +238,8 @@ class _LoginPageState extends State<LoginPage> {
                     semanticsLabel: 'Login com Google',
                   ),
                 ),
+
+
                 const SizedBox(width: 80),
                 SvgPicture.asset(
                   'assets/facebook.svg', // Caminho do ícone do Facebook

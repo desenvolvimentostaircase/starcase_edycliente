@@ -2,6 +2,10 @@ import 'package:edywasacliente/Cores/cores.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../Login/Home/HomePrincipal/HomeListaContatos/Buscar/buscar.dart';
+import '../Login/Home/HomePrincipal/HomePerfil/home_perfil.dart';
+import '../Login/Home/HomePrincipal/HomeSolicitacao/home_solicitacao.dart';
+
 // Função para o AppBar customizado
 PreferredSizeWidget customAppBar(BuildContext context) {
   return AppBar(
@@ -62,17 +66,14 @@ PreferredSizeWidget customAppBar(BuildContext context) {
                       'Tupã', // Cidade atual (substituir pela lógica dinâmica)
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,             
+                        fontSize: 16,
                       ),
-          
                     ),
                     SizedBox(width: 2),
-                    Icon(Icons.location_on,
-                        color: Colors.white),
-                         // Ícone de localização
+                    Icon(Icons.location_on, color: Colors.white),
+                    // Ícone de localização
                   ],
                 ),
-            
                 SizedBox(height: 2),
                 Row(
                   children: [
@@ -83,7 +84,7 @@ PreferredSizeWidget customAppBar(BuildContext context) {
                         fontSize: 16,
                       ),
                     ),
-                    SizedBox(width: 18)//Espaçmento da linha onde estou!
+                    SizedBox(width: 18) //Espaçmento da linha onde estou!
                   ],
                 ),
               ],
@@ -133,7 +134,11 @@ Drawer customDrawer(BuildContext context) {
           title: 'Lista de Profissionais',
           onTap: () {
             Navigator.pop(context);
-            Navigator.pushNamed(context, '/listaProfissionais');
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const Buscar(),
+              ),
+            );
           },
         ),
         _buildListTileWithIcon(
@@ -142,7 +147,11 @@ Drawer customDrawer(BuildContext context) {
           title: 'Minhas Solicitações',
           onTap: () {
             Navigator.pop(context);
-            Navigator.pushNamed(context, '/minhasSolicitacoes');
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const HomeSolicitacao(),
+              ),
+            );
           },
         ),
         _buildListTileWithIcon(
@@ -151,7 +160,11 @@ Drawer customDrawer(BuildContext context) {
           title: 'Editar Perfil',
           onTap: () {
             Navigator.pop(context);
-            Navigator.pushNamed(context, '/editarPerfil');
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const HomePerfil(),
+              ),
+            );
           },
         ),
         _buildListTileWithIcon(
@@ -244,20 +257,30 @@ Widget _buildListTileWithIcon(BuildContext context,
 
 // Função para criar itens com ações específicas
 Widget _buildCompactListTile(String title, VoidCallback onTap) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(
-        vertical: 2), // Espaçamento reduzido entre os itens
-    child: ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 16), // Tamanho ajustado para o texto
+  return GestureDetector(
+    onTap: onTap,
+    child: MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Container(
+        color: Colors.transparent, // Transparência ao passar o mouse
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              vertical: 0), // Espaçamento reduzido entre os itens
+          child: ListTile(
+            title: Text(
+              title,
+              style: const TextStyle(
+                  fontSize: 16), // Tamanho ajustado para o texto
+            ),
+            onTap: onTap, // Chama a ação passada como parâmetro
+            dense: true, // Torna o ListTile mais compacto
+            visualDensity: const VisualDensity(
+                vertical: -4), // Reduz ainda mais o espaçamento
+            contentPadding:
+                EdgeInsets.zero, // Remover espaço extra ao redor do ListTile
+          ),
+        ),
       ),
-      onTap: onTap, // Chama a ação passada como parâmetro
-      dense: true, // Torna o ListTile mais compacto
-      visualDensity:
-          const VisualDensity(vertical: -4), // Reduz ainda mais o espaçamento
-      contentPadding:
-          EdgeInsets.zero, // Remover espaço extra ao redor do ListTile
     ),
   );
 }
